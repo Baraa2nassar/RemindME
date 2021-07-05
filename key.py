@@ -1,5 +1,5 @@
 import os
 
 def bot_pass():
-    with open("bot.txt") as f:
+    with open("bot1.txt") as f:
         return f.read()
