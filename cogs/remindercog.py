@@ -4,6 +4,8 @@ import datetime
 import asyncio
 import pytz
 from discord.ext import tasks, commands
+import re,os
+
 
 class MyCog(commands.Cog):
     def __init__(self, bot):
@@ -13,7 +15,6 @@ class MyCog(commands.Cog):
 
     def cog_unload(self):
         self.printer.cancel()
-
 
     def everyFriday(self): #switches to this week's Friday
         now=datetime.datetime.now()
@@ -30,7 +31,42 @@ class MyCog(commands.Cog):
                 print ("everyFriday broke")
                 pass
 
-    print ("remindercog is up")
+    @commands.command(pass_context=True) # a timer/countdown command that works as long as the bot is alive
+    async def timer(self,ctx, *args):
+       is_a_num = re.search(r"^(\d{2,4})$", ''.join(args)) #the r"string" treats things literly + re is a regular expression + 
+       #the \d is just for it to work in its equivilant charachters like the arabic numerals ٠١٢٣٤٥٦٧٨٩
+       #print (f"is_a_num is {is_a_num}")
+       #print (f"args[0] is: "  +args[0] + "\n" + "args[1]:" + args[1] )
+
+    # or ((isinstance(args[1],int)==False) or (isinstance(args[0],int)==False))
+    #solve to check that the input is int 
+    #solve to accept it whether the user puts a promt or not
+
+       if (is_a_num and len(args) < 2) or (len(args) < 2) : # Make sure 2 arguments were passed
+          await ctx.send(f"***Invalid Command! Must include hours followed by minutes!***\n (ex: `{command_prefix}timer 0 30 'Do HW'`)")
+          embed = discord.Embed(color = discord.Color.red())
+
+          #embed = discord.Embed(title = "",desctiption = "this is desctiption",color=0x461111)
+
+          embed.set_image(url ="https://cdn.discordapp.com/attachments/841054606413791283/861802458686816277/unknown.png")
+          #file = discord.File("https://cdn.discordapp.com/attachments/841054606413791283/861802458686816277/unknown.png", filename="...")
+          await ctx.send(embed=embed)
+
+
+          #await ctx.send(file=discord.File(''))
+       else:
+          eta = ((int(args[0]) * 60) * 60) + (int(args[1]) * 60) #coverts the hours to seconds (args[0]*3600) and minutes to seconds args[1]*60
+          sentence = ''
+          if (len(args)==3):
+            sentence = ("`"+ '"' +args[2]+'"'+"`")
+
+          await ctx.send(f"**I will remind you in **" + args[0] + f"** hour(s) & {args[1]} minute(s) **" + sentence )
+
+          await asyncio.sleep(eta)
+          await ctx.send("**REMINDER** " + ctx.author.mention +  f" {sentence} \n{ctx.message.jump_url} ")
+
+
+    print ("- remindercog is up")
     @tasks.loop(seconds=60.0)
     async def printer(self):
         now=datetime.datetime.now()#has to be in the loop to renew the time
@@ -88,14 +124,4 @@ def setup(bot):
 
 
 '''
-    @bot.command()
-    async def timer(ctx, *args):
-       is_a_num = re.search(r"^(\d{2,4})$", ''.join(args))
-       if is_a_num and len(args) != 2: # Make sure 2 arguments were passed
-          await ctx.send("***Invalid Command! Must include hours followed by minutes!***\n (ex: `/time 0 30`)")
-       else:
-          eta = ((int(args[0]) * 60) * 60) + (int(args[1]) * 60)
-          await ctx.send(f"You will be notified in **" + args[0] + "** hour(s) & **" + args[1] + "** minute(s)!")
-          await asyncio.sleep(eta)
-          await ctx.send(ctx.author.mention + " **ALERT! YOUR TIMER HAS RUN OUT! DO WHAT YOU MUST!**")
 '''
