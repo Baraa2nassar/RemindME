@@ -3,8 +3,13 @@ import json as jason
 import datetime
 import asyncio
 import pytz
+#from bot import *
 from discord.ext import tasks, commands
 import re,os
+import sys
+sys.path.append('C:\\Users\\baraa\\Documents\\GitHub\\RemindME') #goes back one direcrtory to import key
+                                                                 # mainly to use f"{command_prefix}
+from key import *
 
 
 class MyCog(commands.Cog):
@@ -38,11 +43,30 @@ class MyCog(commands.Cog):
        #print (f"is_a_num is {is_a_num}")
        #print (f"args[0] is: "  +args[0] + "\n" + "args[1]:" + args[1] )
 
-    # or ((isinstance(args[1],int)==False) or (isinstance(args[0],int)==False))
+    # or ()
     #solve to check that the input is int 
     #solve to accept it whether the user puts a promt or not
+# or
+       #is_a_num = (isinstance(args[0],int))
+       #print (is_a_num)
 
-       if (is_a_num and len(args) < 2) or (len(args) < 2) : # Make sure 2 arguments were passed
+       try:
+           if ((len(args) >= 2)):
+                val = int(args[0])
+                bal = int (args [1])
+           else:
+                pass
+
+       except ValueError:
+           print("That's not an int!")
+           await ctx.send(f"***Invalid Command! Must include hours followed by minutes!***\n (ex: `{command_prefix}timer 0 30 'Do HW'`)")
+           embed = discord.Embed(color = discord.Color.red())
+           embed.set_image(url ="https://cdn.discordapp.com/attachments/841054606413791283/861802458686816277/unknown.png")
+           #file = discord.File("https://cdn.discordapp.com/attachments/841054606413791283/861802458686816277/unknown.png", filename="...")
+           await ctx.send(embed=embed)
+           return 
+
+       if ((len(args) < 2)) : # Make sure 2 arguments were passed
           await ctx.send(f"***Invalid Command! Must include hours followed by minutes!***\n (ex: `{command_prefix}timer 0 30 'Do HW'`)")
           embed = discord.Embed(color = discord.Color.red())
 

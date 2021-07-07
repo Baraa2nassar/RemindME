@@ -1,5 +1,8 @@
 import os
 
+command_prefix='!'
+
+
 def bot_pass():
-    with open("bot1.txt") as f:
+    with open("SeTe.txt") as f:
         return f.read()

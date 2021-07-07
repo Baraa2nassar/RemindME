@@ -10,8 +10,9 @@ from discord.ext import commands
 
 intents = discord.Intents.all()
 intents.members = True
-command_prefix='!'
+
 bot = commands.Bot(command_prefix , intents=intents)  # add the intents= part to your existing constructor call
+#bot = commands.Bot(command_prefix , intents=intents,help_command=None)  # add the intents= part to your existing constructor call
 
 ''' #a testing command for debuging
 @bot.command()
