@@ -20,6 +20,7 @@ class MyCog(commands.Cog):
     def cog_unload(self):
         self.printer.cancel()
 
+    print ("- remindercog is up")
     def everyFriday(self): #switches to this week's Friday
         now=datetime.datetime.now()
         week= datetime.timedelta(days = 7)
@@ -35,8 +36,6 @@ class MyCog(commands.Cog):
                 print ("everyFriday broke")
                 pass
 
-
-
     @commands.command(pass_context=True) 
 
     async def reminders_list(self,ctx):
@@ -44,7 +43,7 @@ class MyCog(commands.Cog):
             cmds = f.read()
           #embed = discord.Embed(color = discord.Color.red())
           #await ctx.send(embed=embed)
-          await ctx.send("```CSS\n" + cmds + "```")
+          await ctx.send("```CSS\n These are the current runnning reminders:\n" + cmds + "```")
 
     @commands.command(pass_context=True) 
     async def timer(self,ctx, *args):# a timer/countdown command that works as long as the bot is alive
@@ -70,7 +69,8 @@ class MyCog(commands.Cog):
        except ValueError:
            print("That's not an int!")
            await ctx.send(f"***Invalid Command! Must include hours followed by minutes!***\n (ex: `{command_prefix}timer 0 30 'Do HW'`)")
-           embed = discord.Embed(color = discord.Color.red())
+           #embed = discord.Embed(color = discord.Color.red())
+           embed = discord.Embed(color=0xFFD700 )
            embed.set_image(url ="https://cdn.discordapp.com/attachments/841054606413791283/861802458686816277/unknown.png")
            #file = discord.File("https://cdn.discordapp.com/attachments/841054606413791283/861802458686816277/unknown.png", filename="...")
            await ctx.send(embed=embed)
@@ -98,14 +98,28 @@ class MyCog(commands.Cog):
 
           with open(f"{ctx.message.guild.name}_reminders_list", "a+") as f: #the a+ will append the data and it will create a file if there is no existing file already
             #each server have their own guild docs with their own reminders
-            f.write(str(ctx.message.content)+" by: "+ (ctx.author.name) +'\n')
+            my_timer = re.sub(r"!timer", '', ctx.message.content)
 
+            des = (str(my_timer)+" by: "+ (ctx.author.name) +'\n')
+            f.write(des)
+            print (f"des is: {des}")
 
           await asyncio.sleep(eta)
+
+          with open(f"{ctx.message.guild.name}_reminders_list", "r+") as f:
+              
+              lines = f.readlines()
+              f.seek(0)
+              for i in lines:
+                if i!=des:
+                    f.write(i)
+              f.truncate()
+
           await ctx.send("**REMINDER** " + ctx.author.mention +  f" {sentence} \n{ctx.message.jump_url} ")
 
+          #deleting this previous reminder
 
-    print ("- remindercog is up")
+    #https://i.ytimg.com/vi/C49pbTDHgog/hqdefault.jpg
     @tasks.loop(seconds=60.0)
     async def printer(self):
         now=datetime.datetime.now()#has to be in the loop to renew the time

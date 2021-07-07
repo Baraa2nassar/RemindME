@@ -19,15 +19,19 @@ bot = commands.Bot(command_prefix , intents=intents)  # add the intents= part to
 async def ping(ctx):
 	await ctx.send("pong")
 '''
+
 @bot.event
 async def on_ready():
-    await bot.change_presence(activity = discord.Game(name = "(HAHA I am Alive, JUST WAIT UNTIL BARAA SETS ME FREE)"))
+    await bot.change_presence(activity = discord.Game(name = "!cmds for commands"))
     #guild = bot.get_guild(756582312208236695)
     #print (guild.members[1])
     print("We have logged in as {0.user}".format(bot))
 
 
 bot.load_extension("cogs.remindercog")
+bot.load_extension("cogs.helpCog")
+bot.load_extension("cogs.funCommandsCogs")
+
 
 BOT = os.getenv("BOT_SECRET", bot_pass())
 token = BOT
