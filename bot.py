@@ -7,6 +7,9 @@ import asyncio
 import logging
 import re,os
 from discord.ext import commands
+from pytz import timezone
+
+
 
 intents = discord.Intents.all()
 intents.members = True
@@ -22,6 +25,7 @@ async def ping(ctx):
 
 @bot.event
 async def on_ready():
+	
     await bot.change_presence(activity = discord.Game(name = "!cmds for commands"))
     #guild = bot.get_guild(756582312208236695)
     #print (guild.members[1])

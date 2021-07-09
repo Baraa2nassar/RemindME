@@ -33,7 +33,7 @@ class FunCommandsCog(commands.Cog):
 
 	    dice=["dice",'die','di','dic']
 	    if userMessage.startswith(f"role a di"):
-	    	await message.reply("🎲"+random.randint(1,6))
+	    	await message.reply("🎲"+str(random.randint(1,6)))
 
 def setup(bot):
 	bot.add_cog(FunCommandsCog(bot))

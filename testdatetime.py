@@ -1,10 +1,31 @@
 import re,os
 import sys
+import datetime
+import pytz
+from pytz import timezone
 
 #filename = input("filename: ")
+eastern = timezone('US/Central')
+now=datetime.datetime.now().astimezone(eastern)
+remindMeAT =datetime.datetime(2021,7,8,16,11)  #year,month,day,hour,min,sec
 
-filename = "showq.txt"
-whatYouSay = (input("enter a text to be saved in the file \n"))
+week= datetime.timedelta(days = 7)
+hour = datetime.timedelta(hours = 9)
 
-with open(filename, "a+") as f: #the a+ will append the data and it will create a file if there is no existing file already
-  f.write(str(whatYouSay)+'\n')
+my_date = datetime.datetime.now(pytz.timezone('US/Eastern'))
+
+#print(now)
+now = now.replace(tzinfo=None)
+
+#print(my_date)
+print(now)
+#print(now.strftime("%Y-%m-%dT%H:%M:%S"))
+
+
+#print ("The time is " + (now.strftime("%I:%M%p")))
+#print(now.strftime("%I:%M%p"))
+#print(now)
+
+#print(now+hour)
+
+#print (dayo)
