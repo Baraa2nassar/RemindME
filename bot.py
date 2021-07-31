@@ -1,21 +1,13 @@
-import discord
+#import discord
 from key import *
-
-import json as jason
+#import json as jason
 import datetime
 import asyncio
 import logging
 import re,os
-from discord.ext import commands
+#from discord.ext import commands
 from pytz import timezone
-
-
-
-intents = discord.Intents.all()
-intents.members = True
-
-bot = commands.Bot(command_prefix , intents=intents)  # add the intents= part to your existing constructor call
-#bot = commands.Bot(command_prefix , intents=intents,help_command=None)  # add the intents= part to your existing constructor call
+import asyncpg
 
 ''' #a testing command for debuging
 @bot.command()
@@ -36,7 +28,23 @@ bot.load_extension("cogs.remindercog")
 bot.load_extension("cogs.helpCog")
 bot.load_extension("cogs.funCommandsCogs")
 
+numnum = os.getenv("BOT_SECRET", yaya_sql())
+
+async def create_db_pool():
+    bot.pg_con = await asyncpg.create_pool(
+      database="reminders",
+      user="postgres",
+      password=numnum)
+      #,max_inactive_connection_lifetime=3)
+
+'''
+ALTER USER postgres PASSWORD 'RemindBookLet'
+ https://stackoverflow.com/questions/55038942/fatal-password-authentication-failed-for-user-postgres-postgresql-11-with-pg/55039419
+'''
+
+bot.loop.run_until_complete(create_db_pool())
 
 BOT = os.getenv("BOT_SECRET", bot_pass())
 token = BOT
 bot.run(token)
+
