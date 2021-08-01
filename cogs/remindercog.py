@@ -1,5 +1,5 @@
 import discord
-import json as jason
+#import json as jason
 import datetime
 import asyncio
 import pytz
@@ -14,26 +14,80 @@ import asyncpg
 from key import *
 from pytz import timezone
 import textwrap
+import time
+from dateparser.search import search_dates
+
 #import time
+class ParsedTime:
+  def __init__(self, dt, arg):
+      self.dt = dt
+      self.arg = arg
+
+class TimeConverter(commands.Converter):
+  async def convert(self, ctx, argument) -> ParsedTime:
+      parsed = search_dates(
+          argument, settings={
+              'TIMEZONE': 'US/Eastern',
+              'PREFER_DATES_FROM': 'future',
+              'FUZZY': True
+          }
+      )
+
+      
+      if not parsed:
+      #if ((when is None) ) : # Make sure 2 arguments were passed - #Error handler to show the correct input
+          await ctx.send(f"***Invalid Command! Must include hours followed by minutes!***\n (ex: `{command_prefix}timer 0 30 'Do HW'`)")
+          embed = discord.Embed(color = discord.Color.red())
+          #embed = discord.Embed(title = "",desctiption = "this is desctiption",color=0x461111)
+          embed.set_image(url ="https://cdn.discordapp.com/attachments/841054606413791283/861802458686816277/unknown.png")
+          #file = discord.File("https://cdn.discordapp.com/attachments/841054606413791283/861802458686816277/unknown.png", filename="...")
+          return await ctx.send(embed=embed)
+          raise commands.BadArgument('Invalid time provided. Try again with a different time.') # Time can't be parsed from the argument
+
+      string_date = parsed[0][0]
+      date_obj = parsed[0][1]
+      now=datetime.datetime.now().astimezone(eastern)
+      now = now.replace(tzinfo=None)
+
+      if date_obj <= now: # Check if the argument parsed time is in the past.
+          raise commands.BadArgument('Time can not be in the past.') # Raise an error.
+
+      reason = argument.replace(string_date, "")
+      if reason[0:2] == 'me' and reason[0:6] in ('me to ', 'me in ', 'me at '): # Checking if reason startswith me to/in/at
+          reason = reason[6:] # Strip it.
+
+      if reason[0:2] == 'me' and reason[0:9] == 'me after ': # Checking if the reason starts with me after
+          reason = reason[9:] # Strip it.
+
+      if reason[0:3] == 'me ': # Checking if the reason starts with "me "
+          reason = reason[3:] # Strip it.
+
+      if reason[0:2] == 'me': # Checking if the reason starts with me
+          reason = reason[2:] # Strip it.
+
+      if reason[0:6] == 'after ': # Checking if the argument starts with "after "
+          reason = reason[6:] # Strip it.
+
+      if reason[0:5] == 'after': # Checking if the argument starts with after
+          reason = reason[5:] # Strip it.
+
+      return ParsedTime(date_obj.replace(tzinfo=None), reason.strip())
 
 
 eastern = timezone('US/Eastern')
+#----------------------------------------------
+
 class MyCog(commands.Cog):
     def __init__(self, bot):
         self.index = 0
-        
         self.bot = bot
 
         self.printer.start()
         self.yourtask.start()
         
-
     async def run(self, *args, **kwargs):
       numnum = os.getenv("BOT_SECRET", yaya_sql())
-
-
-      self.pg_con = await asyncpg.connect(database="reminders",user="postgres",password=numnum)
-      
+      self.pg_con = await asyncpg.connect(database="reminders",user="postgres",password=numnum)      
       self.yourtask.start()
 
         #self._task = bot.loop.create_task(self.dispatch_timers())
@@ -138,9 +192,8 @@ class MyCog(commands.Cog):
                 """
 
         records = await self.bot.pg_con.fetch(query, str(ctx.author.id))
+
        # ClockIn = await self.bot.pg_con.fetch("SELECT * FROM za_time WHERE url = $1 ",URL)
-
-
         if len(records) == 0:
             return await ctx.send('No currently running reminders.')
 
@@ -159,85 +212,67 @@ class MyCog(commands.Cog):
 
             e.add_field(name= f'<t:{int(expired.timestamp())}:R>', value=f" [{_id}]({url}) {shorten} ...", inline=False)
 
-            #embed.add_field(name=random.choice(CoolTitle), value=f"<@{user_id}> {content}\n [Jump to message]({url})" , inline=False)
 
+        await ctx.send(embed=e) 
+    #@commands.command(pass_context=True) 
+    @commands.group(name='reminder', aliases=['remindme', 'remind', "timer"], usage='<when>', invoke_without_command=True)
+    async def reminder(self,ctx, *, when: TimeConverter):
 
-        await ctx.send(embed=e)
-    @commands.command(pass_context=True) 
-    async def timer(self,ctx, *args):# a timer/countdown command that works as long as the bot is alive
-       is_a_num = re.search(r"^(\d{2,4})$", ''.join(args)) #the r"string" treats things literly + re is a regular expression + 
-       #Error handler to show the correct input
-
-       try: #checker
-           if ((len(args) >= 2)):
-                val = int(args[0])
-                bal = int (args [1])
-           else:
-                pass
-       except ValueError: #Error handler to show the correct input
-           print("That's not an int!")
-           await ctx.send(f"***Invalid Command! Must include hours followed by minutes!***\n (ex: `{command_prefix}timer 0 30 'Do HW'`)")
-           embed = discord.Embed(color=discord.Color.red() )
-           embed.set_image(url ="https://cdn.discordapp.com/attachments/841054606413791283/861802458686816277/unknown.png")
-           #file = discord.File("https://cdn.discordapp.com/attachments/841054606413791283/861802458686816277/unknown.png", filename="...")
-           await ctx.send(embed=embed)
-           return
-
-       if ((len(args) < 2)) : # Make sure 2 arguments were passed - #Error handler to show the correct input
+      if ((when is None) ) : # Make sure 2 arguments were passed - #Error handler to show the correct input
           await ctx.send(f"***Invalid Command! Must include hours followed by minutes!***\n (ex: `{command_prefix}timer 0 30 'Do HW'`)")
           embed = discord.Embed(color = discord.Color.red())
           #embed = discord.Embed(title = "",desctiption = "this is desctiption",color=0x461111)
           embed.set_image(url ="https://cdn.discordapp.com/attachments/841054606413791283/861802458686816277/unknown.png")
           #file = discord.File("https://cdn.discordapp.com/attachments/841054606413791283/861802458686816277/unknown.png", filename="...")
-          await ctx.send(embed=embed)
+          return await ctx.send(embed=embed)
+       
+      print ("here is the time: ")
+      print (when.dt)
+      print (when.arg)
+      now=datetime.datetime.now().astimezone(eastern)
 
-       else:
-          now=datetime.datetime.now().astimezone(eastern)
-          #coverts the hours to seconds (args[0]*3600) and minutes to seconds args[1]*60
-          eta = ((int(args[0]) * 60) * 60) + (int(args[1]) * 60) 
-          sentence = ''
-          if (len(args)==3):
-            sentence = ("`"+ '"' +args[2]+'"'+"`")
+      #sentence = ''
+      sentence = ("`"+ '"' +when.arg+'"'+"`")
 
-          secondsAdd= datetime.timedelta(seconds = eta) #how long is the timer is for
-          NewREminder = now + secondsAdd 
+      await ctx.send(f"**I will remind you  **" + f'<t:{int(when.dt.timestamp())}:R>' +sentence )
+      #e.add_field(name= f'<t:{int(expired.timestamp())}:R>', value=f" [{_id}]({url}) {shorten} ...", inline=False)
 
-          await ctx.send(f"**I will remind you  **" + f'<t:{int(NewREminder.timestamp())}:R>' +sentence )
-          #e.add_field(name= f'<t:{int(expired.timestamp())}:R>', value=f" [{_id}]({url}) {shorten} ...", inline=False)
+      user_ID=str(ctx.message.author.id)
+      guild_id=str(ctx.message.guild.id)
+      channel_id=str(ctx.message.channel.id)
+      URL = ctx.message.jump_url
 
+      ClockIn = await self.bot.pg_con.fetch("SELECT * FROM za_time WHERE url = $1 "
+        ,URL)
+      
+      if not ClockIn:
+        now=datetime.datetime.now().astimezone(eastern)
+        now = now.replace(tzinfo=None)
+        #when.dt = when.dt.replace(tzinfo=None)
+        #print(when.dt)
+        await self.bot.pg_con.execute('''
+            INSERT INTO za_time(user_id,guild_id, created, expired,content,url,channel_id) VALUES($1, $2,$3,$4,$5,$6,$7)
+        ''', user_ID,guild_id,now,when.dt,sentence,URL,channel_id)
 
-          user_ID=str(ctx.message.author.id)
-          guild_id=str(ctx.message.guild.id)
-          channel_id=str(ctx.message.channel.id)
-          #msg_id
-          #channel_id
-          URL = ctx.message.jump_url
-
-          ClockIn = await self.bot.pg_con.fetch("SELECT * FROM za_time WHERE url = $1 "
-            ,URL)
-          
-          if not ClockIn:
-            now=datetime.datetime.now().astimezone(eastern)
-            now = now.replace(tzinfo=None)
-            NewREminder = NewREminder.replace(tzinfo=None)
-            #print(NewREminder)
-            await self.bot.pg_con.execute('''
-                INSERT INTO za_time(user_id,guild_id, created, expired,content,url,channel_id) VALUES($1, $2,$3,$4,$5,$6,$7)
-            ''', user_ID,guild_id,now,NewREminder,sentence,URL,channel_id)
-
-
-          #it sleeps
-          if self.yourtask.is_running():
-            self.yourtask.restart()
-          else:
-            self.yourtask.start()
+      #it sleeps
+      if self.yourtask.is_running():
+        self.yourtask.restart()
+      else:
+        self.yourtask.start()
           
           #await asyncio.sleep(eta)
           #reminder message after it slept
           #deleting this previous reminder
 
-    
-    @tasks.loop(seconds=60.0)
+    @reminder.error
+    async def remind_error(ctx, error): # Add self as the first param if this is in a cog/class.
+        if isinstance(error, TimeInPast):
+            await ctx.send("Time is in the past.")
+        elif isinstance(error, InvalidTimeProvided):
+            await ctx.send("Invalid time.")
+
+
+    @tasks.loop(seconds=60.0) #this will be merged with the other function soon when I apply#reocuring command           
     async def printer(self):
 
         now=datetime.datetime.now().astimezone(eastern)#has to be in the loop to renew the time

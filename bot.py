@@ -37,11 +37,6 @@ async def create_db_pool():
       password=numnum)
       #,max_inactive_connection_lifetime=3)
 
-'''
-ALTER USER postgres PASSWORD 'RemindBookLet'
- https://stackoverflow.com/questions/55038942/fatal-password-authentication-failed-for-user-postgres-postgresql-11-with-pg/55039419
-'''
-
 bot.loop.run_until_complete(create_db_pool())
 
 BOT = os.getenv("BOT_SECRET", bot_pass())
