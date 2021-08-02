@@ -22,7 +22,7 @@ print(now)
 #print(now.strftime("%Y-%m-%dT%H:%M:%S"))
 
 
-#print ("The time is " + (now.strftime("%I:%M%p")))
+print (" " + (now.strftime("%A at %I:%M%p -- %h/%d/%Y ")))
 #print(now.strftime("%I:%M%p"))
 #print(now)
 
