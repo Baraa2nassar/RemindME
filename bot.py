@@ -23,6 +23,10 @@ async def on_ready():
     #print (guild.members[1])
     print("We have logged in as {0.user}".format(bot))
 
+@bot.event
+async def on_command_error(ctx, error):
+  if isinstance(error, commands.TooManyArguments):
+    await ctx.send('too many arguments')
 
 bot.load_extension("cogs.remindercog")
 bot.load_extension("cogs.helpCog")
@@ -32,6 +36,7 @@ numnum = os.getenv("BOT_SECRET", yaya_sql())
 
 async def create_db_pool():
     bot.pg_con = await asyncpg.create_pool(
+      host="localhost",
       database="reminders",
       user="postgres",
       password=numnum)

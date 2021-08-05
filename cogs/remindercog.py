@@ -17,7 +17,6 @@ import textwrap
 import time
 import traceback
 from dateparser.search import search_dates
-import parsedatetime as pdt
 
 #have a bug that I need to reaearch sometime soon, where if you put "!remind me hello" it will set hello two days from now
 #which is annoying I wait it to raise an error for that
@@ -25,6 +24,8 @@ import parsedatetime as pdt
 #raise toomanyarguments issue for non ignore commands
 
 #import time
+eastern = timezone('US/Eastern')
+
 class ParsedTime:
   def __init__(self, dt, arg):
       self.dt = dt
@@ -39,7 +40,14 @@ class TimeConverter(commands.Converter):
               'FUZZY': True
           }
       )
-      print ("parsed is {parsed}")
+      if parsed is None:
+          return None
+      elif(parsed [0][0] == "me"):
+          return None
+      else:
+          pass
+          #return parsed 
+
       if not parsed:
       #if ((when is None) ) : # Make sure 2 arguments were passed - #Error handler to show the correct input
           await ctx.send(f"***Invalid Command! see following example***\n (ex: `{command_prefix}remind me in 10 minutes to 'Do HW'\n !remind me next thursday at 3pm to attend MSA event`)")
@@ -47,18 +55,26 @@ class TimeConverter(commands.Converter):
           #embed = discord.Embed(title = "",desctiption = "this is desctiption",color=0x461111)
           embed.set_image(url ="https://cdn.discordapp.com/attachments/841054606413791283/871492062665658398/unknown.png")
           #file = discord.File("https://cdn.discordapp.com/attachments/841054606413791283/861802458686816277/unknown.png", filename="...")
-          return await ctx.send(embed=embed)
+          return await ctx.send(embed=embed,delete_after=25)
           raise self.InvalidTimeProvided()
           #raise commands.BadArgument('Invalid time provided. Try again with a different time.') # Time can't be parsed from the argument
 
       string_date = parsed[0][0]
       date_obj = parsed[0][1]
+
       now=datetime.datetime.now().astimezone(eastern)
       now = now.replace(tzinfo=None)
-
+      #print ("now: ",now)
+      #print ("date_obj: ",date_obj)
       if date_obj <= now: # Check if the argument parsed time is in the past.
           await ctx.send("Time is in the past.")
           raise commands.BadArgument('Time can not be in the past.') # Raise an error.
+      
+      to_be_passed = f"in {argument}"
+      
+
+      if (to_be_passed == "in me"):
+        raise commands.BadArgument('Provided time is invalid')
 
       reason = argument.replace(string_date, "")
       if reason[0:2] == 'me' and reason[0:6] in ('me to ', 'me in ', 'me at '): # Checking if reason startswith me to/in/at
@@ -79,10 +95,11 @@ class TimeConverter(commands.Converter):
       if reason[0:5] == 'after': # Checking if the argument starts with after
           reason = reason[5:] # Strip it.
 
+
       return ParsedTime(date_obj.replace(tzinfo=None), reason.strip())
 
 
-eastern = timezone('US/Eastern')
+
 #----------------------------------------------
 
 class MyCog(commands.Cog):
@@ -95,7 +112,7 @@ class MyCog(commands.Cog):
         
     async def run(self, *args, **kwargs):
       numnum = os.getenv("BOT_SECRET", yaya_sql())
-      self.pg_con = await asyncpg.connect(database="reminders",user="postgres",password=numnum)      
+      self.pg_con = await asyncpg.connect(host="localhost",database="reminders",user="postgres",password=numnum)      
       self.yourtask.start()
 
         #self._task = bot.loop.create_task(self.dispatch_timers())
@@ -192,18 +209,17 @@ class MyCog(commands.Cog):
     async def reminder(self,ctx, *, when: TimeConverter):
 
       if ((when is None or when.dt is None ) ) : # Make sure 2 arguments were passed - #Error handler to show the correct input
-          await ctx.send(f"***NPPPPPPPP!***\n (ex: `{command_prefix}timer 0 30 'Do HW'`)")
+          await ctx.send(f"***Invalid Command! see following example***\n (ex: `{command_prefix}remind me in 10 minutes to 'Do HW'\n !remind me next thursday at 3pm to attend MSA event`)")
           embed = discord.Embed(color = discord.Color.red())
           #embed = discord.Embed(title = "",desctiption = "this is desctiption",color=0x461111)
-          embed.set_image(url ="https://cdn.discordapp.com/attachments/841054606413791283/861802458686816277/unknown.png")
+          embed.set_image(url ="https://cdn.discordapp.com/attachments/841054606413791283/871492062665658398/unknown.png")
           #file = discord.File("https://cdn.discordapp.com/attachments/841054606413791283/861802458686816277/unknown.png", filename="...")
-          return await ctx.send(embed=embed)
+          return await ctx.send(embed=embed,delete_after=25)
+          raise self.InvalidTimeProvided()
 
-      print(f"when is {when}") 
-      print(f"TimeConverter is {TimeConverter}") 
-      print ("here is the time: ")
-      print (when.dt)
-      print (when.arg)
+      #print(f"when is {when.dt}") 
+      #print(f"TimeConverter is {TimeConverter.arg}") 
+      #print ("here is the time: ")
       now=datetime.datetime.now().astimezone(eastern)
 
       #sentence = ''
@@ -238,10 +254,25 @@ class MyCog(commands.Cog):
           #await asyncio.sleep(eta)
           #reminder message after it slept
           #deleting this previous reminder
-
+    @reminder.error
+    async def remind_error(self,ctx, error): # Add self as the first param if this is in a cog/class.
+        #if isinstance(error, TimeInPast):
+        #    await ctx.send("Time is in the past.")
+        if isinstance(error, commands.BadArgument):
+            await ctx.send("Invalid time. Try `!remind me to say salam to my friend in 5 min`")
+        if isinstance(error, commands.MissingRequiredArgument):
+            if error.param.name == 'when':
+                await ctx.send("You forgot to give me input! Try `!remind me tomorrow at 2:59pm to send email to prof. Baraa`")
+        if isinstance(error, commands.TooManyArguments):
+                await ctx.send(f'Too many arguments.')
+              
     @reminder.command(name='list', ignore_extra=False)
     async def reminder_list(self, ctx):
         """Shows the 10 latest currently running reminders."""
+        #if not self.ignore_extra:
+            #if not view.eof:
+                 #raise TooManyArguments('Too many arguments passed to ' + self.qualified_name)
+        
         query = """SELECT row_id, expired, content, url 
                    FROM za_time
                    WHERE completed = false
@@ -297,17 +328,7 @@ class MyCog(commands.Cog):
 
         await ctx.send('Successfully deleted reminder.')
 
-    @reminder.error
-    async def remind_error(self,ctx, error): # Add self as the first param if this is in a cog/class.
-        #if isinstance(error, TimeInPast):
-        #    await ctx.send("Time is in the past.")
-        if isinstance(error, commands.BadArgument):
-            await ctx.send("Invalid time.")
-        if isinstance(error, commands.MissingRequiredArgument):
-            if error.param.name == 'when':
-                await ctx.send("You forgot to give me input!")
-        if isinstance(error, commands.TooManyArguments):
-            return await ctx.send(f'You called the {ctx.command.name} command with too many arguments.')
+ 
 
 
     @tasks.loop(seconds=60.0) #this will be merged with the other function soon when I apply#reocuring command           
