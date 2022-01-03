@@ -20,7 +20,9 @@ quotes = ["Time waits for no one","Time is like a sword if you don't cut it it w
 "“There are two blessings which many people lose: (They are) health and free time for doing good.” (Bukhari 8/421)", 
 "“Yesterday is history, tomorrow is a mystery, but today is a gift. That is why it is called the present.”",
  "The key is in not spending time, but in investing it","plan for the worst hope for the best"
- ,"https://youtu.be/JObb2BYmp2w?t=45","https://www.youtube.com/watch?v=0xe5twFK1SI"]
+ ,"https://youtu.be/JObb2BYmp2w?t=45","https://www.youtube.com/watch?v=0xe5twFK1SI","https://youtu.be/qqlwhoDH5ac?t=22","Keep moving forward",
+ "“Power is not will, it is the phenomenon of physically making things happen.” – Madara Uchiha","“If you don’t like your destiny, don’t accept it. Instead have the courage to change it the way you want it to be.”","“If strength is justice, then is powerlessness a crime?”"
+ ,"think before you speak","https://cdn.discordapp.com/attachments/811474434186936321/818664862955077632/video0.mp4",""]
 
 class helpingCog(commands.Cog):
     def __init__(self, bot):
@@ -47,10 +49,11 @@ class helpingCog(commands.Cog):
               embed.add_field(name="**Quote**", value=quote , inline=False)
               #embed.add_field(name="**Commands**", value="```fix\n"+cmds+"\n```", inline=False) 
               embed.add_field(name="**Commands**", value=cmds, inline=False) 
-              embed.add_field(name='If you wish to add me in your server,' ,value='[Click here to add]( https://discord.com/api/oauth2/authorize?client_id=838246081509720174&permissions=260382780480&scope=bot )', inline=False)
+              embed.add_field(name='If you wish to add me in your server,' ,
+                value='[Click here to add]( https://discord.com/api/oauth2/authorize?client_id=838246081509720174&permissions=260382780480&scope=bot )',
+                inline=False)
               embed.set_author(name = "RemindME Bot Commands:",icon_url="https://image.flaticon.com/icons/png/512/1792/1792929.png")
               #embed.set_footer(text='add this bot to your server',icon_url="https://i.imgur.com/uZIlRnK.png")
-
 
               embed.set_thumbnail(
                 url=

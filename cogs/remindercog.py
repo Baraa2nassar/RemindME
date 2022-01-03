@@ -98,8 +98,6 @@ class TimeConverter(commands.Converter):
 
       return ParsedTime(date_obj.replace(tzinfo=None), reason.strip())
 
-
-
 #----------------------------------------------
 
 class MyCog(commands.Cog):
@@ -225,7 +223,6 @@ class MyCog(commands.Cog):
       #sentence = ''
       sentence = ("`"+ '"' +when.arg+'"'+"`")
 
-      await ctx.send(f"**I will remind you  **" + f'<t:{int(when.dt.timestamp())}:R>' +sentence )
       #e.add_field(name= f'<t:{int(expired.timestamp())}:R>', value=f" [{_id}]({url}) {shorten} ...", inline=False)
 
       user_ID=str(ctx.message.author.id)
@@ -235,6 +232,7 @@ class MyCog(commands.Cog):
 
       ClockIn = await self.bot.pg_con.fetch("SELECT * FROM za_time WHERE url = $1 "
         ,URL)
+      await ctx.send(f"**I will remind you  **" + f'<t:{int(when.dt.timestamp())}:R>' +sentence )
       
       if not ClockIn:
         now=datetime.datetime.now().astimezone(eastern)
@@ -273,6 +271,7 @@ class MyCog(commands.Cog):
             #if not view.eof:
                  #raise TooManyArguments('Too many arguments passed to ' + self.qualified_name)
         
+        now=datetime.datetime.now().astimezone(eastern)
         query = """SELECT row_id, expired, content, url 
                    FROM za_time
                    WHERE completed = false
@@ -293,15 +292,13 @@ class MyCog(commands.Cog):
             e.set_footer(text='Only showing up to 10 reminders.')
         else:
             e.set_footer(text=f'{len(records)} reminder{"s" if len(records) > 1 else ""}')
-
+        now=datetime.datetime.now().astimezone(eastern)
         for _id, expired, message,url in records:
             shorten = textwrap.shorten(message, width=512)
             #print(records['expired'])
             #deadLine=records['expired']
             #expired = expired.strftime("%A at %I:%M%p -- %h/%d/%Y")
-
             e.add_field(name= f'<t:{int(expired.timestamp())}:R>', value=f" [{_id}]({url}) {shorten} ...", inline=False)
-
 
         await ctx.send(embed=e) 
 
@@ -327,8 +324,6 @@ class MyCog(commands.Cog):
             self.yourtask.start()
 
         await ctx.send('Successfully deleted reminder.')
-
- 
 
 
     @tasks.loop(seconds=60.0) #this will be merged with the other function soon when I apply#reocuring command           

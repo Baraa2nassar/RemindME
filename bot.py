@@ -27,6 +27,36 @@ async def on_ready():
 async def on_command_error(ctx, error):
   if isinstance(error, commands.TooManyArguments):
     await ctx.send('too many arguments')
+  if isinstance(error, commands.MissingRequiredArgument):
+      #if error.param.name == 'when':
+      await ctx.send("You forgot to give me input! Try `!remind me tomorrow at 2:59pm to send email to prof. Baraa`")
+
+@bot.command()
+@commands.has_permissions(manage_channels=True, manage_messages=True)
+async def poll(ctx: commands.Context, channel: discord.TextChannel, *, message=""):
+    """Send message to a specific channel. then adds emojis underneath it"""       
+    print("hey")
+    print ("msg is: ",message)
+    custom_emojis = re.findall(r'[^\w\s()\"#/[@;:<>{}`+=~|.!?,-]', message)      
+    print (custom_emojis)
+    x = await ctx.guild.get_channel(channel.id).send(message)
+    for index, mystr in enumerate(custom_emojis):
+       # x = await message.channel.send(mystr)
+       try:
+        await x.add_reaction(str(mystr))
+       except:
+        pass
+        
+    await ctx.message.add_reaction ("✅")
+    # return await ctx.tick()
+
+    # if message.content.startswith("/poll"):
+      # print (message.content)
+      # messageContent=message.content.replace ("/poll","")
+
+      # custom_emojis = re.findall(r'[^\w\s()\"#/[@;:<>{}`+=~|.!?,-]', message.content)
+      # print (custom_emojis)
+      
 
 bot.load_extension("cogs.remindercog")
 bot.load_extension("cogs.helpCog")
