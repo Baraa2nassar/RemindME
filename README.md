@@ -6,7 +6,7 @@ a discord bot that schedules messages
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
+<!-- [![MIT License][license-shield]][license-url] -->
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
 
@@ -15,7 +15,7 @@ a discord bot that schedules messages
 <br />
 <div align="center">
   <a href="https://github.com/Baraa2nassar/RemindME">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="https://cdn.discordapp.com/attachments/767632792950407179/929117040864808990/1792929.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">RemindMe Discord Bot</h3>
@@ -236,5 +236,5 @@ Use this space to list resources you find helpful and would like to give credit 
 [license-shield]: https://img.shields.io/github/license/Baraa2nassar/RemindME.svg?style=for-the-badge
 [license-url]: https://github.com/Baraa2nassar/RemindME/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
-[product-screenshot]: images/screenshot.png
+[linkedin-url]: https://linkedin.com/in/baraa2nassar
+[product-screenshot]: https://cdn.discordapp.com/attachments/767632792950407179/929123702036107324/unknown.png
