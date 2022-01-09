@@ -103,23 +103,38 @@ Now yes you would have to ability on a normal reminder app to edit and change an
 
 To add the bot to your server use [this link](https://discord.com/api/oauth2/authorize?client_id=838246081509720174&permissions=260382780480&scope=bot)
 
-
 Type `!cmds` and you will get the appropriate commands to use
 
 ### Commands
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+`!remind me` in <1 hour> do particular task 
+
+
+
+`!reminder list` #lists all active timers with their ID
+
+`!reminder delete <id>` or `reminder cancel <id>`
+
+  Some other fun comands:
+  `!quote`
+  `flip a coin`
+  `roll a dice`
+
 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+  !remind me in 5 days/months/years Hassan's Birthday
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+  !remind me on June 8th at 1pm "like this day is when the president of France was slapped"
+
+  !remind list
+
+  !remind delete 123
+
+  !remind cancel 123
+
+  !remind me in 40 min call Hassan
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -128,15 +143,15 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ROADMAP -->
 ## Roadmap
 
-- [x] Add Changelog
-- [x] Add back to top links
-- [ ] Add Additional Templates w/ Examples
-- [ ] Add "components" document to easily copy & paste sections of the readme
-- [ ] Multi-language Support
-    - [ ] Chinese
-    - [ ] Spanish
+- [x] Make the time reminders still work even if the reboots
+- [x] Friendly user timer, input: remindme in 1 hour 1 minut to "go walk my fish" it will work
+- [x] let the user delete his/her own timer if they wanted to
+- [x] add readME
+- [ ] use git command to debug the bot/update/restart it from discord
+- [ ] make a reocuring command for weekly meetings or weekly tasks
+- [ ] have a todo list
 
-See the [open issues](https://github.com/Baraa2nassar/RemindME/issues) for a full list of proposed features (and known issues).
+Check out [open issues](https://github.com/Baraa2nassar/RemindME/issues) to see any proposed features AKA issues.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -145,16 +160,17 @@ See the [open issues](https://github.com/Baraa2nassar/RemindME/issues) for a ful
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+This entire program is open srouce so feel free to take inspiration from it. Also please feel free to suggest any great ideas. No idea is left behind :) You may please fork the repo and create a pull request. 
+Feel free to give this project a star if you like it. 
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
-
+To add your changes using Git:
 1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
+2. Create your Feature Branch (`git checkout -b cool/AmazingIdea`)
+3. Commit your Changes (`git commit -m 'Add some AmazingIdea'`)
+4. Push to the Branch (`git push origin feature/AmazingIdea`)
 5. Open a Pull Request
+
+You can also download Github Desktop to use GUI system to do similar function to the top
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -172,9 +188,9 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
+Baraa Nassar - [@baraa2nassar](https://www.instagram.com/baraa2nassar) - baraa-aziz@hotmail.com
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+Project Link: [https://github.com/Baraa2nassar/RemindME](https://github.com/Baraa2nassar/RemindME)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -183,16 +199,13 @@ Project Link: [https://github.com/your_username/repo_name](https://github.com/yo
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
+Some other sources that helped me build this project:
 
-* [Choose an Open Source License](https://choosealicense.com)
-* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-* [Malven's Flexbox Cheatsheet](https://flexbox.malven.co/)
-* [Malven's Grid Cheatsheet](https://grid.malven.co/)
-* [Img Shields](https://shields.io)
-* [GitHub Pages](https://pages.github.com)
-* [Font Awesome](https://fontawesome.com)
-* [React Icons](https://react-icons.github.io/react-icons/search)
+* [Discord.py reference library](https://github.com/Rapptz/discord.py)
+* [RibiDanny Github](https://github.com/Rapptz/RoboDanny)
+* [A Reminder Converter](https://gist.github.com/proguy914629bot/487ffdb266b66dd8652333783f289940)
+* [ReadMe reference](https://github.com/othneildrew/Best-README-Template/blob/master/README.md)
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
